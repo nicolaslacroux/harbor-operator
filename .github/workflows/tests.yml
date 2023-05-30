@@ -17,10 +17,10 @@ jobs:
     name: Build docker image
 
     steps:
-    - uses: actions/setup-go@v2
+    - uses: actions/setup-go@v4
       with:
         go-version: 1.18
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - run: |
         docker buildx create --use
         make docker-build
@@ -37,30 +37,30 @@ jobs:
     runs-on: ubuntu-latest
     name: 'golang: lint'
     steps:
-    - uses: actions/setup-go@v2
+    - uses: actions/setup-go@v4
       with:
         go-version: 1.18
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - run: make go-lint
 
   go-dependencies:
     runs-on: ubuntu-latest
     name: Dependencies are up to date
     steps:
-    - uses: actions/setup-go@v2
+    - uses: actions/setup-go@v4
       with:
         go-version: 1.18
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - run: make go-dependencies-test
 
   check-generated-files:
     runs-on: ubuntu-latest
     name: Generated files are up to date
     steps:
-    - uses: actions/setup-go@v2
+    - uses: actions/setup-go@v4
       with:
         go-version: 1.18
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - run: make generated-diff-test
 
   go-tests:
@@ -71,14 +71,14 @@ jobs:
       IMAGE_SOURCE_REPOSITORY: ghcr.io/goharbor
       dockerImage: harbor-operator:dev_test
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
-      - uses: actions/setup-go@v2
+      - uses: actions/setup-go@v4
         with:
           go-version: 1.18
 
       - name: Cache go mod
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ~/go/pkg/mod
           key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
@@ -116,7 +116,7 @@ jobs:
           kind export logs --name harbor /tmp/logs
           ls -l /tmp/logs
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         if: ${{ failure() }}
         with:
           name: kind_go-tests
@@ -153,9 +153,9 @@ jobs:
         - "standard_stack_fs.yaml"
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
-    - uses: actions/setup-go@v2
+    - uses: actions/setup-go@v4
       with:
         go-version: 1.18
 
@@ -164,7 +164,7 @@ jobs:
         version: 'latest'
 
     - name: Cache go mod
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         path: ~/go/pkg/mod
         key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
@@ -312,7 +312,7 @@ jobs:
         kubectl -n cluster-sample-ns logs -l "app.kubernetes.io/component=redis" --all-containers > /tmp/harbor/redis.log
         ls -l /tmp/harbor
 
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v3
       if: ${{ failure() }}
       with:
         name: harbor_v${{ matrix.k8sVersion }}_v${{ matrix.certManager }}_${{ matrix.samples }}
@@ -321,11 +321,13 @@ jobs:
     - name: fetch logs
       if: ${{ failure() }}
       run: |
+
+
         mkdir  -p /tmp/logs
         kind export logs --name harbor /tmp/logs
         ls -l /tmp/logs
 
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v3
       if: ${{ failure() }}
       with:
         name: kind_v${{ matrix.k8sVersion }}_v${{ matrix.certManager }}_${{ matrix.samples }}
@@ -366,9 +368,9 @@ jobs:
           - "full_stack.yaml"
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
-      - uses: actions/setup-go@v2
+      - uses: actions/setup-go@v4
         with:
           go-version: 1.18
 
@@ -377,7 +379,7 @@ jobs:
           version: 'v1.25.4'
 
       - name: Cache go mod
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ~/go/pkg/mod
           key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
@@ -525,7 +527,7 @@ jobs:
           kubectl -n cluster-sample-ns logs -l "app.kubernetes.io/component=redis" --all-containers > /tmp/harbor/redis.log
           ls -l /tmp/harbor
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         if: ${{ failure() }}
         with:
           name: contour_harbor_v${{ matrix.k8sVersion }}_v${{ matrix.certManager }}_${{ matrix.samples }}
@@ -538,7 +540,7 @@ jobs:
           kind export logs --name harbor /tmp/logs
           ls -l /tmp/logs
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         if: ${{ failure() }}
         with:
           name: contour_kind_v${{ matrix.k8sVersion }}_v${{ matrix.certManager }}_${{ matrix.samples }}
@@ -577,9 +579,9 @@ jobs:
         - "1.3.0"
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
-      - uses: actions/setup-go@v2
+      - uses: actions/setup-go@v4
         with:
           go-version: 1.18
 
@@ -588,7 +590,7 @@ jobs:
           version: 'latest'
 
       - name: Cache go mod
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ~/go/pkg/mod
           key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
@@ -716,7 +718,7 @@ jobs:
           kubectl logs -l "release=harbor-redis" --all-containers > /tmp/harbor/redis.log
           ls -l /tmp/harbor
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         if: ${{ failure() }}
         with:
           name: harbor_chart
@@ -729,7 +731,7 @@ jobs:
           kind export logs --name harbor /tmp/logs
           ls -l /tmp/logs
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         if: ${{ failure() }}
         with:
           name: kind_chart
@@ -747,10 +749,10 @@ jobs:
     runs-on: ubuntu-latest
     name: 'kubernetes_resources: ./config/crd'
     steps:
-    - uses: actions/setup-go@v2
+    - uses: actions/setup-go@v4
       with:
         go-version: 1.18
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - run: make manifests
     - uses: azure/k8s-bake@v1
       with:
@@ -762,10 +764,10 @@ jobs:
     runs-on: ubuntu-latest
     name: 'kubernetes_resources: ./config/rbac'
     steps:
-    - uses: actions/setup-go@v2
+    - uses: actions/setup-go@v4
       with:
         go-version: 1.18
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - run: make manifests
     - uses: azure/k8s-bake@v1
       with:
@@ -784,7 +786,7 @@ jobs:
         - harborcluster-standard
         - harborcluster-fullstack
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - uses: azure/k8s-bake@v1
       with:
         renderEngine: 'kustomize'
@@ -796,5 +798,5 @@ jobs:
     runs-on: ubuntu-latest
     name: 'documentation: lint'
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - run: make md-lint
