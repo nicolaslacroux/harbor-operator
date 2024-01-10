@@ -104,6 +104,11 @@ type ComponentSpec struct {
 	// Cannot be updated.
 	// More info: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/
 	Resources corev1.ResourceRequirements `json:"resources,omitempty"`
+
+	// +kubebuilder:validation:Optional
+	// If specified, the pod's affinity strategy.
+	// More info: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#affinity-and-anti-affinity
+	Affinity *corev1.Affinity `json:"affinity,omitempty"`
 }
 
 func (c *ComponentSpec) ApplyToDeployment(deploy *appsv1.Deployment) {
@@ -127,6 +132,10 @@ func (c *ComponentSpec) ApplyToDeployment(deploy *appsv1.Deployment) {
 	deploy.Spec.Template.Spec.ImagePullSecrets = c.ImagePullSecrets
 	deploy.Spec.Template.Spec.NodeSelector = c.NodeSelector
 	deploy.Spec.Template.Spec.Tolerations = c.Tolerations
+
+	if c.Affinity != nil {
+		deploy.Spec.Template.Spec.Affinity = c.Affinity
+	}
 }
 
 // ComponentStatus represents the current status of the resource.
